@@ -29,7 +29,7 @@ Content-Type: application/json
 
 ###
 
-#не хватает денег без транзакций
+#симуляция ошибки между операциями без транзакции
 
 POST http://localhost:8080/api/no-transactions/transfer
 Content-Type: application/json
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 ###
-
+#симуляция ошибки между операциями с транзакцией
 POST http://localhost:8080/api/transactions/transfer
 Content-Type: application/json
 

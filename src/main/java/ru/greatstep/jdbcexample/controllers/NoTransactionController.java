@@ -1,17 +1,23 @@
 package ru.greatstep.jdbcexample.controllers;
 
-import ru.greatstep.jdbcexample.dto.AccountDto;
-import ru.greatstep.jdbcexample.dto.TransferRequest;
-import ru.greatstep.jdbcexample.dto.TransactionLogDto;
-import ru.greatstep.jdbcexample.service.NoTransactionService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.greatstep.jdbcexample.dto.AccountDto;
+import ru.greatstep.jdbcexample.dto.TransactionLogDto;
+import ru.greatstep.jdbcexample.dto.TransferRequest;
+import ru.greatstep.jdbcexample.service.NoTransactionService;
 
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/no-transactions")
+@Profile("jdbc")
 public class NoTransactionController {
 
     private final NoTransactionService noTransactionService;

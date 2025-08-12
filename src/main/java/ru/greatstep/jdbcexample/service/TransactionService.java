@@ -1,6 +1,7 @@
 package ru.greatstep.jdbcexample.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.greatstep.jdbcexample.dto.AccountDto;
 import ru.greatstep.jdbcexample.dto.TransactionLogDto;
@@ -15,11 +16,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Profile("jdbc")
 public class TransactionService {
 
     private final DataSource dataSource;
 
-    public void transferMoney(int fromAccountId, int toAccountId, double amount) throws SQLException {
+    public void transferMoney(long fromAccountId, long toAccountId, double amount) throws SQLException {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
@@ -91,10 +93,10 @@ public class TransactionService {
         return logs;
     }
 
-    private double getAccountBalance(Connection connection, int accountId) throws SQLException {
+    private double getAccountBalance(Connection connection, long accountId) throws SQLException {
         String sql = "SELECT balance FROM accounts WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountId);
+            stmt.setLong(1, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("balance");
@@ -103,11 +105,11 @@ public class TransactionService {
         }
     }
 
-    private void updateAccountBalance(Connection connection, int accountId, double amount) throws SQLException {
+    private void updateAccountBalance(Connection connection, long accountId, double amount) throws SQLException {
         String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDouble(1, amount);
-            stmt.setInt(2, accountId);
+            stmt.setLong(2, accountId);
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Account not found: " + accountId);
@@ -115,8 +117,10 @@ public class TransactionService {
         }
     }
 
-    private void logTransaction(Connection connection, Integer fromAccountId, Integer toAccountId,
-                                Double amount, String status, String errorMessage) throws SQLException {
+    private void logTransaction(
+            Connection connection, Long fromAccountId, Long toAccountId,
+            Double amount, String status, String errorMessage
+    ) throws SQLException {
         String sql = "INSERT INTO transaction_log (from_account, to_account, amount, status, error_message) " +
                 "VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

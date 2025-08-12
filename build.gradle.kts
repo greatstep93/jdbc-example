@@ -30,6 +30,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.postgresql:postgresql:42.7.7")
 
+    //jpa
+
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3")
+
 
     //lombok
     compileOnly("org.projectlombok:lombok")

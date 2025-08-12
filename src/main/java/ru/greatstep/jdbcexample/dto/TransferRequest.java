@@ -1,4 +1,4 @@
 package ru.greatstep.jdbcexample.dto;
 
-public record TransferRequest(int fromAccountId, int toAccountId, double amount) {
+public record TransferRequest(long fromAccountId, long toAccountId, double amount) {
 }

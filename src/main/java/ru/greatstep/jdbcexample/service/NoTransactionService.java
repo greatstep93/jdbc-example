@@ -1,15 +1,21 @@
 package ru.greatstep.jdbcexample.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 import ru.greatstep.jdbcexample.dto.AccountDto;
 import ru.greatstep.jdbcexample.dto.TransactionLogDto;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Profile("jdbc")
 public class NoTransactionService {
 
     private final DataSource dataSource;
@@ -19,7 +25,7 @@ public class NoTransactionService {
         this.dataSource = dataSource;
     }
 
-    public void transferMoney(int fromAccountId, int toAccountId, double amount) throws SQLException {
+    public void transferMoney(long fromAccountId, long toAccountId, double amount) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             // НЕТ вызова connection.setAutoCommit(false) - каждая операция авто-коммитится
 
@@ -84,10 +90,10 @@ public class NoTransactionService {
         return logs;
     }
 
-    private double getAccountBalance(Connection connection, int accountId) throws SQLException {
+    private double getAccountBalance(Connection connection, long accountId) throws SQLException {
         String sql = "SELECT balance FROM accounts WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountId);
+            stmt.setLong(1, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("balance");
@@ -96,11 +102,11 @@ public class NoTransactionService {
         }
     }
 
-    private void updateAccountBalance(Connection connection, int accountId, double amount) throws SQLException {
+    private void updateAccountBalance(Connection connection, long accountId, double amount) throws SQLException {
         String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDouble(1, amount);
-            stmt.setInt(2, accountId);
+            stmt.setLong(2, accountId);
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Account not found: " + accountId);
@@ -108,8 +114,10 @@ public class NoTransactionService {
         }
     }
 
-    private void logTransaction(Connection connection, Integer fromAccountId, Integer toAccountId,
-                                Double amount, String status, String errorMessage) throws SQLException {
+    private void logTransaction(
+            Connection connection, Long fromAccountId, Long toAccountId,
+            Double amount, String status, String errorMessage
+    ) throws SQLException {
         String sql = "INSERT INTO transaction_log (from_account, to_account, amount, status, error_message) " +
                 "VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

@@ -1,1 +1,1 @@
-rootProject.name = "jdbc-example"
+rootProject.name = "jdbc-jpa-transaction-example"

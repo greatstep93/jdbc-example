@@ -1,5 +1,6 @@
 package ru.greatstep.jdbcexample.controllers;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
+@Profile("jdbc")
 public class TransactionController {
 
     private final TransactionService transactionService;
