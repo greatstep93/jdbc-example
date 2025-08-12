@@ -1,0 +1,52 @@
+GET http://localhost:8080/api/transactions/accounts
+
+###
+
+POST http://localhost:8080/api/transactions/transfer
+Content-Type: application/json
+
+{
+  "fromAccountId": 1,
+  "toAccountId": 2,
+  "amount": 100.00
+}
+
+
+###
+
+GET http://localhost:8080/api/transactions/logs
+
+###
+# недостаточно денег
+POST http://localhost:8080/api/transactions/transfer
+Content-Type: application/json
+
+{
+  "fromAccountId": 3,
+  "toAccountId": 1,
+  "amount": 500.00
+}
+
+###
+
+#не хватает денег без транзакций
+
+POST http://localhost:8080/api/no-transactions/transfer
+Content-Type: application/json
+
+{
+  "fromAccountId": 1,
+  "toAccountId": 2,
+  "amount": 666.00
+}
+
+###
+
+POST http://localhost:8080/api/transactions/transfer
+Content-Type: application/json
+
+{
+"fromAccountId": 1,
+"toAccountId": 2,
+"amount": 666.00
+}
